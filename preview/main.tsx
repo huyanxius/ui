@@ -1,4 +1,4 @@
-import { useState, type ComponentProps, type ReactNode } from 'react'
+import { useLayoutEffect, useState, type ComponentProps, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ArrowRight, Plus } from 'lucide-react'
 import { zhCN } from 'react-day-picker/locale'
@@ -45,10 +45,17 @@ const calendarProps = {
   disabled: { dayOfWeek: [0, 6] },
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section className="grid min-w-0 gap-4 border-t border-rule py-6 sm:grid-cols-[8rem_minmax(0,1fr)]">
-      <h2 className="text-base font-semibold text-ink">{title}</h2>
+    <section
+      id={id}
+      tabIndex={-1}
+      aria-labelledby={id + '-title'}
+      className="grid min-w-0 scroll-mt-4 gap-4 border-t border-rule py-6 sm:grid-cols-[8rem_minmax(0,1fr)]"
+    >
+      <h2 id={id + '-title'} className="text-base font-semibold text-ink">
+        {title}
+      </h2>
       <div className="min-w-0 space-y-4">{children}</div>
     </section>
   )
@@ -56,7 +63,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 function ButtonSamples() {
   return (
-    <Section title="按钮">
+    <Section id="button" title="按钮">
       <div className="flex flex-wrap items-center gap-2">
         {variants.map(([variant, label]) => (
           <Button key={variant} variant={variant}>
@@ -122,7 +129,7 @@ function SelectSample({
 function DialogSamples() {
   const [open, setOpen] = useState(false)
   return (
-    <Section title="弹窗">
+    <Section id="dialog" title="弹窗">
       <div className="flex flex-wrap gap-2">
         <Button variant="outline" onClick={() => setOpen(true)}>
           打开居中弹窗
@@ -165,7 +172,7 @@ function Calendars() {
     to: new Date(2026, 10, 13),
   })
   return (
-    <Section title="日历">
+    <Section id="calendar" title="日历">
       <div id="calendars" className="flex flex-wrap gap-4">
         <div>
           <p className="mb-2 text-sm text-muted">单选</p>
@@ -194,10 +201,22 @@ function App() {
   const selectClass =
     'rounded-(--radius-control) border border-rule bg-surface px-2 py-1.5 text-ink'
 
+  useLayoutEffect(() => {
+    // 首页的链接可能在 React 渲染出组件区块前就触发浏览器的锚点定位。
+    const section = document.getElementById(window.location.hash.slice(1))
+    section?.focus({ preventScroll: true })
+    section?.scrollIntoView()
+  }, [])
+
   return (
     <main className="mx-auto max-w-5xl px-6 py-8 sm:py-12">
       <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <h1 className="text-3xl font-bold text-ink">UI 组件预览</h1>
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <h1 className="text-3xl font-bold text-ink">UI 组件预览</h1>
+          <a className="py-2 text-sm text-accent underline underline-offset-4" href="../">
+            首页
+          </a>
+        </div>
         <div className="flex flex-wrap gap-4 text-sm">
           <label className="flex items-center gap-2">
             主题
@@ -228,7 +247,7 @@ function App() {
         </div>
       </header>
       <ButtonSamples />
-      <Section title="标签">
+      <Section id="badge" title="标签">
         <div className="flex flex-wrap items-center gap-2">
           {variants.map(([variant, label]) => (
             <Badge key={variant} variant={variant}>
@@ -243,7 +262,7 @@ function App() {
           </Badge>
         </div>
       </Section>
-      <Section title="输入框">
+      <Section id="input" title="输入框">
         <div className="grid gap-2 sm:grid-cols-2">
           <Input aria-label="普通输入" placeholder="普通输入" />
           <Input aria-label="文件输入" type="file" />
@@ -251,7 +270,7 @@ function App() {
           <Input aria-label="无效输入" defaultValue="格式有误" aria-invalid="true" />
         </div>
       </Section>
-      <Section title="选择框">
+      <Section id="select" title="选择框">
         <div className="flex flex-wrap gap-2">
           <SelectSample label="标准选择框" defaultValue="light" />
           <SelectSample label="紧凑选择框" size="sm" position="popper" />
@@ -260,7 +279,7 @@ function App() {
         </div>
       </Section>
       <DialogSamples />
-      <Section title="骨架屏">
+      <Section id="skeleton" title="骨架屏">
         <div role="status" aria-label="正在加载" className="flex max-w-72 items-center gap-3">
           <Skeleton className="size-10 shrink-0" />
           <div className="grid flex-1 gap-2">

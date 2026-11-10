@@ -1,0 +1,10 @@
+@import 'tailwindcss' source(none);
+@import './styles/theme.css';
+@import './styles/themes/inkpaw.css';
+@source './index.html';
+
+@layer components {
+  .component-link {
+    @apply inline-block min-w-24 font-mono text-ink underline decoration-rule-strong underline-offset-4 hover:text-accent;
+  }
+}

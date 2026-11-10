@@ -146,3 +146,75 @@ it.each(['light', 'dark'] as const)(
   },
   30_000,
 )
+
+// Inkpaw's public color and shadow values before the palette split.
+const inkpawColors = {
+  canvas: ['#f5f5f5', '#1c1e1d'],
+  surface: ['#ffffff', '#242625'],
+  'surface-muted': ['#f7f7f7', '#202221'],
+  'surface-strong': ['#ededed', '#303331'],
+  page: ['#ffffff', '#1c1e1d'],
+  stage: ['#f5f5f5', '#222423'],
+  scrim: ['rgb(17 17 17 / 32%)', 'rgb(0 0 0 / 56%)'],
+  ink: ['#111111', '#e6e7e3'],
+  'ink-soft': ['#303030', '#c9ccc6'],
+  muted: ['#6c6c6c', '#a4aaa2'],
+  faint: ['#969696', '#92998f'],
+  rule: ['#e3e3e3', '#383d38'],
+  'rule-strong': ['#cccccc', '#50574f'],
+  accent: ['#3f5fd6', '#93a9f6'],
+  'accent-hover': ['#3550bd', '#a9bbf8'],
+  'accent-soft': ['#e9eefc', '#2a3150'],
+  'accent-line': ['#cdd7f7', '#3a4670'],
+  'on-accent': ['#ffffff', '#121a33'],
+  danger: ['#98434b', '#e2a3a6'],
+  'danger-soft': ['#f8edef', '#382729'],
+  'danger-line': ['#ecd3d7', '#553a3d'],
+  'notice-line': ['#b8b8b8', '#50574f'],
+} as const
+
+const inkpawShadows = {
+  control: ['0 1px 2px rgb(17 17 17 / 8%)', '0 1px 2px rgb(0 0 0 / 24%)'],
+  card: [
+    '0 1px 2px rgb(17 17 17 / 4%), 0 8px 24px rgb(17 17 17 / 6%)',
+    '0 1px 2px rgb(0 0 0 / 24%), 0 8px 24px rgb(0 0 0 / 24%)',
+  ],
+  cover: ['0 2px 6px rgb(17 17 17 / 10%)', '0 2px 6px rgb(0 0 0 / 30%)'],
+  focus: ['0 0 0 4px #e9eefc', '0 0 0 4px #2a3150'],
+} as const
+
+it.each(['light', 'dark'] as const)('preserves every Inkpaw color and shadow in %s mode', async (scheme) => {
+  const page = await browser.newPage()
+  try {
+    await page.goto(new URL('preview/', server.resolvedUrls!.local[0]).href)
+    await page.getByLabel('主题').selectOption('inkpaw')
+    await page.getByLabel('明暗').selectOption(scheme)
+    const index = scheme === 'light' ? 0 : 1
+    const checks = [
+      ...Object.entries(inkpawColors).map(([name, values]) => ({
+        token: `--color-${name}`, property: 'color', value: values[index],
+      })),
+      ...Object.entries(inkpawShadows).map(([name, values]) => ({
+        token: `--shadow-${name}`, property: 'box-shadow', value: values[index],
+      })),
+    ]
+    const results = await page.evaluate((checks) => {
+      const actual = document.body.appendChild(document.createElement('span'))
+      const reference = document.body.appendChild(document.createElement('span'))
+      return checks.map(({ token, property, value }) => {
+        actual.style.setProperty(property, `var(${token})`)
+        reference.style.setProperty(property, value)
+        return {
+          token,
+          actual: getComputedStyle(actual).getPropertyValue(property),
+          expected: getComputedStyle(reference).getPropertyValue(property),
+        }
+      })
+    }, checks)
+    for (const { token, actual, expected } of results) {
+      expect(actual, token).toBe(expected)
+    }
+  } finally {
+    await page.close()
+  }
+})

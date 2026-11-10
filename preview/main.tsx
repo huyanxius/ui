@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState, type ComponentProps } from 'react'
+import { useLayoutEffect, useRef, useState, useSyncExternalStore, type ComponentProps } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ArrowRight, Plus } from 'lucide-react'
 import { zhCN } from 'react-day-picker/locale'
@@ -26,8 +26,12 @@ import {
   Skeleton,
 } from '../src'
 import { Catalog } from './catalog'
-import { Section } from './section'
+import { componentGroups, currentComponent, subscribeToComponent } from './directory'
+import { PreviewSectionId, Section } from './section'
 import './styles.css'
+
+const selectClass =
+  'min-h-8 rounded-(--radius-control) border border-rule bg-surface px-2 py-1.5 text-sm text-ink'
 
 const variants = [
   ['default', '默认'],
@@ -71,7 +75,7 @@ function ButtonSamples() {
           已展开
         </Button>
         <Button asChild variant="outline">
-          <a href="#calendars">
+          <a href="#calendar">
             跳到日历 <ArrowRight data-icon="inline-end" aria-hidden="true" />
           </a>
         </Button>
@@ -183,55 +187,42 @@ function Calendars() {
   )
 }
 
-function App() {
-  const selectClass =
-    'rounded-(--radius-control) border border-rule bg-surface px-2 py-1.5 text-ink'
-
-  useLayoutEffect(() => {
-    // 首页的链接可能在 React 渲染出组件区块前就触发浏览器的锚点定位。
-    const section = document.getElementById(window.location.hash.slice(1))
-    section?.focus({ preventScroll: true })
-    section?.scrollIntoView()
-  }, [])
-
+function AppearanceControls() {
   return (
-    <main className="mx-auto max-w-5xl px-6 py-8 sm:py-12">
-      <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <h1 className="text-3xl font-bold text-ink">UI 组件预览</h1>
-          <a className="py-2 text-sm text-accent underline underline-offset-4" href="../">
-            首页
-          </a>
-        </div>
-        <div className="flex flex-wrap gap-4 text-sm">
-          <label className="flex items-center gap-2">
-            主题
-            <select
-              className={selectClass}
-              defaultValue="inkpaw"
-              onChange={(event) => {
-                document.documentElement.dataset.uiTheme = event.currentTarget.value
-              }}
-            >
-              <option value="inkpaw">Inkpaw</option>
-              <option value="verify">Verify</option>
-            </select>
-          </label>
-          <label className="flex items-center gap-2">
-            明暗
-            <select
-              className={selectClass}
-              defaultValue="light"
-              onChange={(event) => {
-                document.documentElement.dataset.theme = event.currentTarget.value
-              }}
-            >
-              <option value="light">浅色</option>
-              <option value="dark">深色</option>
-            </select>
-          </label>
-        </div>
-      </header>
+    <div className="flex flex-wrap gap-3 text-sm">
+      <label className="flex items-center gap-2">
+        主题
+        <select
+          className={selectClass}
+          defaultValue="inkpaw"
+          onChange={(event) => {
+            document.documentElement.dataset.uiTheme = event.currentTarget.value
+          }}
+        >
+          <option value="inkpaw">Inkpaw</option>
+          <option value="verify">Verify</option>
+        </select>
+      </label>
+      <label className="flex items-center gap-2">
+        明暗
+        <select
+          className={selectClass}
+          defaultValue="light"
+          onChange={(event) => {
+            document.documentElement.dataset.theme = event.currentTarget.value
+          }}
+        >
+          <option value="light">浅色</option>
+          <option value="dark">深色</option>
+        </select>
+      </label>
+    </div>
+  )
+}
+
+function Examples() {
+  return (
+    <>
       <ButtonSamples />
       <Section id="badge" title="标签">
         <div className="flex flex-wrap items-center gap-2">
@@ -241,7 +232,7 @@ function App() {
             </Badge>
           ))}
           <Badge asChild variant="outline">
-            <a href="#calendars">可点击标签</a>
+            <a href="#calendar">可点击标签</a>
           </Badge>
           <Badge variant="outline" aria-invalid="true">
             无效标签
@@ -276,7 +267,90 @@ function App() {
       </Section>
       <Calendars />
       <Catalog />
-    </main>
+    </>
+  )
+}
+
+function App() {
+  const component = useSyncExternalStore(subscribeToComponent, currentComponent)
+  const title = useRef<HTMLHeadingElement>(null)
+
+  useLayoutEffect(() => {
+    document.title = component.name + ' · @huyanxius/ui'
+    if (window.location.hash) {
+      title.current?.focus({ preventScroll: true })
+      window.scrollTo(0, 0)
+    }
+  }, [component])
+
+  return (
+    <div className="flex min-h-dvh flex-col">
+      <header className="border-b border-rule bg-page md:sticky md:top-0 md:z-10">
+        <div className="mx-auto flex min-h-16 max-w-6xl flex-wrap items-center justify-between gap-x-5 gap-y-3 px-4 py-3 sm:px-8">
+          <a href="../" aria-label="首页" className="font-semibold text-ink hover:text-accent">
+            @huyanxius/ui
+          </a>
+          <AppearanceControls />
+        </div>
+      </header>
+      <div className="mx-auto grid w-full max-w-6xl flex-1 md:grid-cols-[12rem_minmax(0,1fr)]">
+        <aside className="hidden min-w-0 border-r border-rule md:block">
+          <nav
+            aria-label="组件目录"
+            className="sticky top-16 max-h-[calc(100dvh-4rem)] space-y-5 overflow-y-auto px-3 py-5"
+          >
+            {componentGroups.map(({ name, entries }) => (
+              <div key={name}>
+                <h2 className="mb-1 px-2 text-sm font-semibold text-ink">{name}</h2>
+                <ul>
+                  {entries.map(({ id, name }) => (
+                    <li key={id}>
+                      <a
+                        href={'#' + id}
+                        aria-current={component.id === id ? 'page' : undefined}
+                        className="block rounded-(--radius-label) px-2 py-1.5 text-sm hover:bg-surface-muted focus-visible:outline-offset-0 aria-[current=page]:bg-accent-soft aria-[current=page]:text-ink"
+                      >
+                        {name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        </aside>
+        <main className="min-w-0 px-4 py-6 sm:px-8 md:py-10">
+          <div className="mb-6 grid gap-2 text-sm md:hidden">
+            <label htmlFor="preview-component">组件</label>
+            <select
+              id="preview-component"
+              className={selectClass}
+              value={component.id}
+              onChange={(event) => {
+                window.location.hash = event.currentTarget.value
+              }}
+            >
+              {componentGroups.map(({ name, entries }) => (
+                <optgroup key={name} label={name}>
+                  {entries.map(({ id, name }) => (
+                    <option key={id} value={id}>
+                      {name}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </div>
+          <h1 ref={title} tabIndex={-1} className="text-3xl font-bold text-ink outline-none sm:text-4xl">
+            {component.name}
+          </h1>
+          <p className="mt-2 text-base text-ink-soft">{component.description}</p>
+          <PreviewSectionId.Provider value={component.id} key={component.id}>
+            <Examples />
+          </PreviewSectionId.Provider>
+        </main>
+      </div>
+    </div>
   )
 }
 

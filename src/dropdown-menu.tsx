@@ -32,7 +32,7 @@ function DropdownMenuContent({
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
-          'z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-(--radius-label) border border-rule bg-popover p-1 text-popover-foreground shadow-card',
+          'z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-(--radius-popup) border border-rule bg-popover p-1 text-popover-foreground shadow-card',
           className,
         )}
         {...props}
@@ -194,17 +194,20 @@ function DropdownMenuSubTrigger({
 
 function DropdownMenuSubContent({
   className,
+  forceMount,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
   return (
-    <DropdownMenuPrimitive.SubContent
-      data-slot="dropdown-menu-sub-content"
-      className={cn(
-        'z-50 min-w-32 origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-(--radius-label) border border-rule bg-popover p-1 text-popover-foreground shadow-card',
-        className,
-      )}
-      {...props}
-    />
+    <DropdownMenuPortal forceMount={forceMount}>
+      <DropdownMenuPrimitive.SubContent
+        data-slot="dropdown-menu-sub-content"
+        className={cn(
+          'z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-(--radius-popup) border border-rule bg-popover p-1 text-popover-foreground shadow-card',
+          className,
+        )}
+        {...props}
+      />
+    </DropdownMenuPortal>
   )
 }
 

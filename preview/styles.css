@@ -6,5 +6,5 @@
 @source '../src';
 
 body {
-  @apply bg-canvas font-sans text-ink-soft antialiased;
+  @apply bg-page font-sans text-ink-soft antialiased;
 }

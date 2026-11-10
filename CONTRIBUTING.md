@@ -7,7 +7,7 @@ pnpm install --frozen-lockfile
 pnpm exec playwright install chromium
 pnpm dev
 pnpm test
-pnpm build
+pnpm build:preview
 ```
 
 在预览页用键盘和鼠标检查改动的状态，切换 Inkpaw、Verify 以及浅色和深色。浏览器测试通过真实页面读取计算样式。修改主题时也要检查通过 portal 打开的菜单和弹窗。

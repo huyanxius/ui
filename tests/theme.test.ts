@@ -123,7 +123,7 @@ it.each(['light', 'dark'] as const)(
         const menu = page.getByRole('listbox')
         const menuStyle = await styleOf(menu)
         expect(menuStyle.backgroundColor).toBe(surface)
-        expect(menuStyle.borderTopLeftRadius).toBe(theme === 'inkpaw' ? '8px' : '0px')
+        expect(menuStyle.borderTopLeftRadius).toBe(theme === 'inkpaw' ? '12px' : '0px')
         expect(menuStyle.fontFamily).toContain(font)
         shadows.push(menuStyle.boxShadow)
         await menu.getByRole('option', { name: '深色' }).click()

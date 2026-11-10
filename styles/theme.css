@@ -60,6 +60,7 @@
   --radius-label: var(--ui-radius-label);
   --radius-indicator: var(--ui-radius-indicator);
   --radius-control: var(--ui-radius-control);
+  --radius-popup: var(--ui-radius-popup, var(--radius-control));
   --radius-card: var(--ui-radius-card);
   --radius-dialog: var(--ui-radius-dialog);
   --radius-pill: var(--ui-radius-pill);
@@ -102,7 +103,7 @@
   --normal-bg: var(--color-popover);
   --normal-text: var(--color-popover-foreground);
   --normal-border: var(--color-border);
-  --border-radius: var(--radius-control);
+  --border-radius: var(--radius-popup);
   --success-bg: var(--color-accent-soft);
   --success-text: var(--color-ink);
   --success-border: var(--color-accent-line);

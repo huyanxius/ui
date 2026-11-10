@@ -48,9 +48,9 @@ export function Combobox({
         data-slot="combobox-content"
         aria-label={searchLabel}
         align="start"
-        className="w-64 p-0"
+        className="w-64 overflow-hidden p-0"
       >
-        <Command label={searchLabel}>
+        <Command label={searchLabel} className="rounded-none bg-transparent">
           <CommandInput aria-label={searchLabel} placeholder={searchLabel} />
           <CommandList>
             <CommandEmpty>{emptyText}</CommandEmpty>

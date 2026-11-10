@@ -1,6 +1,7 @@
 import { chromium, type Browser, type Locator, type Page } from 'playwright'
 import { createServer, type ViteDevServer } from 'vite'
 import { afterAll, beforeAll, expect, it } from 'vitest'
+import { openComponent } from './preview'
 
 let server: ViteDevServer
 let browser: Browser
@@ -24,7 +25,7 @@ async function withPreview(run: (page: Page) => Promise<void>) {
   page.setDefaultTimeout(4_000)
   try {
     await page.goto(new URL('preview/', server.resolvedUrls!.local[0]).href)
-    await page.getByRole('heading', { name: 'UI 组件预览' }).waitFor()
+    await page.getByRole('main').getByRole('heading', { level: 1 }).waitFor()
     await run(page)
   } finally {
     await page.close()
@@ -118,6 +119,7 @@ it.each(['light', 'dark'] as const)(
           rendered.set(name, computed)
         }
         for (const [name, section, selector, color, hasRadius] of surfaces) {
+          await openComponent(page, section)
           await check(
             name,
             page
@@ -129,6 +131,7 @@ it.each(['light', 'dark'] as const)(
           )
         }
         for (const [name, section, label, selector, color] of layers) {
+          await openComponent(page, section)
           const trigger = page
             .locator('#' + section)
             .getByRole('button', { name: label, exact: true })
@@ -147,17 +150,18 @@ it.each(['light', 'dark'] as const)(
 )
 
 const modalCases = [
-  ['确认框', '#alert-dialog', '删除草稿', '[role=alertdialog]'],
-  ['抽屉', '#sheet', '从右侧打开', '[data-slot=sheet-content]'],
-  ['模态浮层', '#popover', '打开模态浮层', '[data-slot=popover-content]'],
-  ['弹窗', '#dialog', '打开页脚关闭弹窗', '[data-slot=dialog-content]'],
-  ['搜索下拉', '#combobox', '选择城市', '[data-slot=combobox-content]'],
+  ['确认框', 'alert-dialog', '删除草稿', '[role=alertdialog]'],
+  ['抽屉', 'sheet', '从右侧打开', '[data-slot=sheet-content]'],
+  ['模态浮层', 'popover', '打开模态浮层', '[data-slot=popover-content]'],
+  ['弹窗', 'dialog', '打开页脚关闭弹窗', '[data-slot=dialog-content]'],
+  ['搜索下拉', 'combobox', '选择城市', '[data-slot=combobox-content]'],
 ] as const
 
 it('keeps keyboard focus within modal layers and restores it after Escape', async () => {
   await withPreview(async (page) => {
     for (const [name, section, label, selector] of modalCases) {
-      const trigger = page.locator(section).getByRole('button', { name: label, exact: true })
+      await openComponent(page, section)
+      const trigger = page.locator('#' + section).getByRole('button', { name: label, exact: true })
       await trigger.press('Enter')
       const layer = page.locator(selector).filter({ visible: true }).first()
       await layer.waitFor()
@@ -179,6 +183,7 @@ it('keeps keyboard focus within modal layers and restores it after Escape', asyn
 
 it('uses arrow-key menu navigation and restores the trigger on dismissal', async () => {
   await withPreview(async (page) => {
+    await openComponent(page, 'dropdown-menu')
     const menuTrigger = page.getByRole('button', { name: '打开菜单', exact: true })
     await menuTrigger.press('ArrowDown')
     const menu = page.getByRole('menu')
@@ -191,6 +196,7 @@ it('uses arrow-key menu navigation and restores the trigger on dismissal', async
     await menu.waitFor({ state: 'hidden' })
     await expect.poll(() => menuTrigger.evaluate((el) => document.activeElement === el)).toBe(true)
 
+    await openComponent(page, 'select')
     const select = page.getByRole('combobox', { name: '标准选择框' })
     await select.press('Space')
     const list = page.getByRole('listbox')
@@ -207,6 +213,7 @@ it('keeps submenu options reachable by pointer and keyboard in a narrow viewport
   await withPreview(async (page) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.emulateMedia({ reducedMotion: 'no-preference' })
+    await page.getByLabel('组件', { exact: true }).selectOption('dropdown-menu')
     const trigger = page.getByRole('button', { name: '打开菜单', exact: true })
     const exportItem = page.getByRole('menuitem', { name: '导出格式' })
     const csv = page.getByRole('menuitem', { name: 'CSV', exact: true })
@@ -240,6 +247,7 @@ it('keeps submenu options reachable by pointer and keyboard in a narrow viewport
 
 it('lets a nonmodal popover dismiss on focus exit and a tooltip leave focus on its trigger', async () => {
   await withPreview(async (page) => {
+    await openComponent(page, 'popover')
     const trigger = page.getByRole('button', { name: '打开浮层', exact: true })
     await trigger.press('Enter')
     const content = page.locator('[data-slot=popover-content]')
@@ -254,6 +262,7 @@ it('lets a nonmodal popover dismiss on focus exit and a tooltip leave focus on i
     await page.getByRole('button', { name: '打开模态浮层' }).focus()
     await content.waitFor({ state: 'hidden' })
 
+    await openComponent(page, 'tooltip')
     const tooltipTrigger = page.getByRole('button', { name: '显示说明', exact: true })
     await tooltipTrigger.focus()
     const tooltip = page.locator('[data-slot=tooltip-content]')
@@ -267,6 +276,7 @@ it('lets a nonmodal popover dismiss on focus exit and a tooltip leave focus on i
 
 it('filters combobox options and commits the keyboard selection', async () => {
   await withPreview(async (page) => {
+    await openComponent(page, 'combobox')
     const trigger = page.locator('#combobox').getByRole('button', { name: '选择城市', exact: true })
     await trigger.press('Enter')
     const search = page.getByRole('combobox', { name: '搜索城市' })

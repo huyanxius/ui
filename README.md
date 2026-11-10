@@ -50,14 +50,17 @@ Combobox 组合 Radix Popover 和 cmdk。传入 `items`（含 `value`、`label`�
 
 | 圆角 | 用途 | Inkpaw |
 | --- | --- | --- |
-| `--radius-label` | 标签、紧凑菜单和日历选区 | 8px |
+| `--radius-label` | 标签、菜单选项和日历选区 | 8px |
 | `--radius-control` | 按钮、输入框等控件 | 12px |
+| `--radius-popup` | 菜单、选择列表和提示等小浮层的外壳 | 12px |
 | `--radius-card` | 内容卡片 | 16px |
-| `--radius-dialog` | 弹窗 | 24px |
+| `--radius-dialog` | 弹窗、抽屉 | 24px |
 | `--radius-pill` | 胶囊 | 999px |
 | `--radius-skeleton` | 骨架屏 | 6px |
 
-Verify 用于预览和主题测试。运行 `pnpm dev` 打开组件库首页，进入 `/preview/` 可查看组件状态并切换主题与明暗。
+小浮层的圆角默认跟随控件。主题可用 `--ui-radius-popup` 单独指定小浮层的圆角。
+
+Verify 用于预览和主题测试。运行 `pnpm dev` 打开组件库首页，进入 `/preview/` 从目录选择组件，查看示例并切换主题与明暗。
 
 ## 令牌检查
 

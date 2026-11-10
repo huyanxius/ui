@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, expect, it } from 'vitest'
 import { chromium, type Browser, type Locator } from 'playwright'
 import { createServer, type ViteDevServer } from 'vite'
+import { openComponent } from './preview'
 
 let server: ViteDevServer
 let browser: Browser
@@ -85,11 +86,12 @@ it.each(['light', 'dark'] as const)(
         const action = page.getByRole('button', { name: '主要操作', exact: true })
         const select = page.getByRole('combobox', { name: '标准选择框' })
         const samples = [
-          ['Button', action, 'backgroundColor', accent, 12],
-          ['Input', page.getByRole('textbox', { name: '普通输入' }), 'borderTopColor', rule, 12],
-          ['Badge', page.getByText('默认标签', { exact: true }), 'backgroundColor', accent, 8],
+          ['Button', 'button', action, 'backgroundColor', accent, 12],
+          ['Input', 'input', page.getByRole('textbox', { name: '普通输入' }), 'borderTopColor', rule, 12],
+          ['Badge', 'badge', page.getByText('默认标签', { exact: true }), 'backgroundColor', accent, 8],
           [
             'Skeleton',
+            'skeleton',
             page.getByRole('status', { name: '正在加载' }).locator('[data-slot=skeleton]').first(),
             'backgroundColor',
             muted,
@@ -97,14 +99,16 @@ it.each(['light', 'dark'] as const)(
           ],
           [
             'Calendar',
+            'calendar',
             page.locator('[data-slot=calendar] [data-selected-single=true]'),
             'backgroundColor',
             accent,
             12,
           ],
-          ['Select', select, 'borderTopColor', rule, 12],
+          ['Select', 'select', select, 'borderTopColor', rule, 12],
         ] as const
-        for (const [name, locator, property, color, radius] of samples) {
+        for (const [name, id, locator, property, color, radius] of samples) {
+          await openComponent(page, id)
           // Theme changes can start a color transition on controls.
           await expect
             .poll(async () => (await styleOf(locator))[property], { message: name })
@@ -114,10 +118,10 @@ it.each(['light', 'dark'] as const)(
             theme === 'inkpaw' ? radius + 'px' : '0px',
           )
           expect(computed.fontFamily, name).toContain(font)
+          if (id === 'button') {
+            expect(computed.transitionDuration).toBe(theme === 'inkpaw' ? '0.14s' : '0.08s')
+          }
         }
-        expect((await styleOf(action)).transitionDuration).toBe(
-          theme === 'inkpaw' ? '0.14s' : '0.08s',
-        )
 
         await select.press('Space')
         const menu = page.getByRole('listbox')
@@ -130,6 +134,7 @@ it.each(['light', 'dark'] as const)(
         await menu.waitFor({ state: 'hidden' })
         expect(await select.textContent()).toContain('深色')
 
+        await openComponent(page, 'dialog')
         await page.getByRole('button', { name: '打开居中弹窗' }).click()
         const dialog = page.getByRole('dialog', { name: '居中弹窗' })
         const dialogStyle = await styleOf(dialog)

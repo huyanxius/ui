@@ -261,20 +261,26 @@ function Forms() {
       </Section>
       <Section id="combobox" title="搜索选择">
         <Row>
-          <Combobox
-            items={cities}
-            placeholder="选择城市"
-            searchLabel="搜索城市"
-            emptyText="没有匹配城市"
-          />
-          <Combobox
-            items={cities}
-            defaultValue="wuhan"
-            disabled
-            placeholder="禁用"
-            searchLabel="搜索城市"
-            emptyText="没有匹配城市"
-          />
+          <div className="space-y-2">
+            <p className="text-sm text-muted">默认</p>
+            <Combobox
+              items={cities}
+              placeholder="选择城市"
+              searchLabel="搜索城市"
+              emptyText="没有匹配城市"
+            />
+          </div>
+          <div className="space-y-2">
+            <p className="text-sm text-muted">禁用</p>
+            <Combobox
+              items={cities}
+              defaultValue="wuhan"
+              disabled
+              placeholder="禁用"
+              searchLabel="搜索城市"
+              emptyText="没有匹配城市"
+            />
+          </div>
         </Row>
       </Section>
       <Section id="field" title="字段组合">

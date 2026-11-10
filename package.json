@@ -1,0 +1,66 @@
+{
+  "name": "@huyanxius/ui",
+  "version": "0.1.0",
+  "description": "Themeable React primitives for Tailwind CSS 4",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huyanxius/ui.git"
+  },
+  "files": [
+    "src",
+    "styles",
+    "checks"
+  ],
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./theme.css": "./styles/theme.css",
+    "./themes/inkpaw.css": "./styles/themes/inkpaw.css",
+    "./themes/verify.css": "./styles/themes/verify.css",
+    "./checks": "./checks/tokens.ts"
+  },
+  "scripts": {
+    "dev": "vite",
+    "test": "vitest run --maxWorkers=2",
+    "build": "tsc --noEmit && vite build"
+  },
+  "dependencies": {
+    "class-variance-authority": "0.7.1",
+    "cn": "0.5.0",
+    "lucide-react": "1.61.0",
+    "radix-ui": "1.8.1",
+    "react-day-picker": "10.0.2"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "4.3.3",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "jsdom": "29.1.1",
+    "playwright": "1.64.1",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "vite": "8.3.5",
+    "vitest": "4.1.12"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": ">=5.5 <7"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "packageManager": "pnpm@11.4.0"
+}

@@ -1,0 +1,10 @@
+@import 'tailwindcss' source(none);
+@import '../styles/theme.css';
+@import '../styles/themes/inkpaw.css';
+@import '../styles/themes/verify.css';
+@source './';
+@source '../src';
+
+body {
+  @apply bg-canvas font-sans text-ink-soft antialiased;
+}

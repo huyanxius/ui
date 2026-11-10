@@ -203,6 +203,41 @@ it('uses arrow-key menu navigation and restores the trigger on dismissal', async
   })
 })
 
+it('keeps submenu options reachable by pointer and keyboard in a narrow viewport', async () => {
+  await withPreview(async (page) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.emulateMedia({ reducedMotion: 'no-preference' })
+    const trigger = page.getByRole('button', { name: '打开菜单', exact: true })
+    const exportItem = page.getByRole('menuitem', { name: '导出格式' })
+    const csv = page.getByRole('menuitem', { name: 'CSV', exact: true })
+
+    await trigger.click()
+    await exportItem.hover()
+    await csv.waitFor()
+    const point = await csv.evaluate(async (option) => {
+      const menus = Array.from(document.querySelectorAll('[role=menu]'))
+      await Promise.allSettled(menus.flatMap((menu) => menu.getAnimations().map((a) => a.finished)))
+      const bounds = option.getBoundingClientRect()
+      const x = bounds.x + bounds.width / 2
+      const y = bounds.y + bounds.height / 2
+      return { x, y, reachable: option.contains(document.elementFromPoint(x, y)) }
+    })
+    expect(point.reachable, 'CSV can be reached without scrolling the parent menu').toBe(true)
+    await page.mouse.click(point.x, point.y)
+    await exportItem.waitFor({ state: 'hidden' })
+
+    await trigger.press('ArrowDown')
+    await exportItem.press('ArrowRight')
+    await expect.poll(() => csv.evaluate((el) => el === document.activeElement)).toBe(true)
+    await page.keyboard.press('ArrowLeft')
+    await csv.waitFor({ state: 'hidden' })
+    await expect.poll(() => exportItem.evaluate((el) => el === document.activeElement)).toBe(true)
+    await page.keyboard.press('Escape')
+    await exportItem.waitFor({ state: 'hidden' })
+    await expect.poll(() => trigger.evaluate((el) => el === document.activeElement)).toBe(true)
+  })
+})
+
 it('lets a nonmodal popover dismiss on focus exit and a tooltip leave focus on its trigger', async () => {
   await withPreview(async (page) => {
     const trigger = page.getByRole('button', { name: '打开浮层', exact: true })

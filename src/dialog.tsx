@@ -1,0 +1,142 @@
+'use client'
+
+import * as React from 'react'
+import { cn } from 'cn'
+import { Dialog as DialogPrimitive } from 'radix-ui'
+
+import { Button } from './button'
+import { XIcon } from 'lucide-react'
+
+function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
+  return <DialogPrimitive.Root data-slot="dialog" {...props} />
+}
+
+function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
+  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />
+}
+
+function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
+  return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />
+}
+
+function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
+  return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
+}
+
+function DialogOverlay({
+  className,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+  return (
+    <DialogPrimitive.Overlay
+      data-slot="dialog-overlay"
+      className={cn('fixed inset-0 isolate z-50 bg-scrim', className)}
+      {...props}
+    />
+  )
+}
+
+function DialogContent({
+  className,
+  children,
+  closeLabel,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Content> & {
+  closeLabel?: string
+}) {
+  return (
+    <DialogPortal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        data-slot="dialog-content"
+        className={cn(
+          'fixed top-1/2 left-1/2 z-50 flex w-10/12 max-w-3xl -translate-x-1/2 -translate-y-1/2 flex-col gap-4 rounded-(--radius-dialog) bg-popover p-4 text-sm text-popover-foreground ring-1 ring-rule outline-none sm:max-w-3xl',
+          className,
+        )}
+        {...props}
+      >
+        {children}
+        {closeLabel && (
+          <DialogPrimitive.Close data-slot="dialog-close" asChild>
+            <Button variant="ghost" className="absolute top-2 right-2" size="icon-sm">
+              <XIcon />
+              <span className="sr-only">{closeLabel}</span>
+            </Button>
+          </DialogPrimitive.Close>
+        )}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  )
+}
+
+function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div data-slot="dialog-header" className={cn('flex flex-col gap-2', className)} {...props} />
+  )
+}
+
+function DialogFooter({
+  className,
+  closeLabel,
+  children,
+  ...props
+}: React.ComponentProps<'div'> & {
+  closeLabel?: string
+}) {
+  return (
+    <div
+      data-slot="dialog-footer"
+      className={cn(
+        '-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-(--radius-control) border-t bg-surface-muted/50 p-4 sm:flex-row sm:justify-end',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+      {closeLabel && (
+        <DialogPrimitive.Close asChild>
+          <Button variant="outline">{closeLabel}</Button>
+        </DialogPrimitive.Close>
+      )}
+    </div>
+  )
+}
+
+function DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
+  return (
+    <DialogPrimitive.Title
+      data-slot="dialog-title"
+      className={cn('text-2xl font-bold', className)}
+      {...props}
+    />
+  )
+}
+
+function DialogDescription({
+  className,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+  return (
+    <DialogPrimitive.Description
+      data-slot="dialog-description"
+      className={cn(
+        'text-sm text-muted-foreground *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground',
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
+export {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+}

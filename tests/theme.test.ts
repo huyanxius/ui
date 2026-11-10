@@ -73,7 +73,7 @@ it.each(['light', 'dark'] as const)(
   async (scheme) => {
     const page = await browser.newPage()
     try {
-      const response = await page.goto(server.resolvedUrls!.local[0])
+      const response = await page.goto(new URL('preview/', server.resolvedUrls!.local[0]).href)
       expect(response?.ok(), 'The Vite component preview is available').toBe(true)
       await page.getByLabel('明暗').selectOption(scheme)
       const shadows = []

@@ -53,7 +53,7 @@ import { Button, CenteredDialog } from '@huyanxius/ui'
 | `--radius-pill` | 胶囊 | 999px |
 | `--radius-skeleton` | 骨架屏 | 6px |
 
-Verify 用于预览和主题测试。运行 `pnpm dev` 打开组件预览，页面上可以切换主题和明暗。
+Verify 用于预览和主题测试。运行 `pnpm dev` 打开组件库首页，进入 `/preview/` 可查看组件状态并切换主题与明暗。
 
 ## 令牌检查
 

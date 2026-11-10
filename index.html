@@ -1,12 +1,89 @@
 <!doctype html>
-<html lang="zh-CN" data-ui-theme="inkpaw" data-theme="light">
+<html lang="zh-CN" data-ui-theme="inkpaw">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>UI 组件预览</title>
+    <meta name="color-scheme" content="light dark" />
+    <meta name="description" content="适用于 React 19 和 Tailwind CSS 4 的基础组件与主题。" />
+    <title>@huyanxius/ui</title>
+    <link rel="stylesheet" href="./overview.css" />
   </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/preview/main.tsx"></script>
+  <body class="bg-page font-sans text-ink-soft antialiased">
+    <header class="border-b border-rule">
+      <div
+        class="mx-auto flex min-h-16 max-w-4xl flex-wrap items-center justify-between gap-x-6 gap-y-1 px-6 py-2 sm:px-8"
+      >
+        <a class="font-semibold text-ink hover:text-accent" href="./" aria-current="page"
+          >@huyanxius/ui</a
+        >
+        <nav class="flex items-center gap-5 text-sm" aria-label="站点">
+          <a class="py-2 hover:text-accent" href="./preview/">组件预览</a>
+          <a class="py-2 hover:text-accent" href="https://github.com/huyanxius/ui">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-4xl px-6 pt-10 pb-14 sm:px-8 sm:pt-14">
+      <h1 class="text-3xl leading-normal font-bold text-ink sm:text-5xl sm:leading-normal">
+        React 基础组件与主题
+      </h1>
+      <p class="mt-3 max-w-2xl text-base">
+        适用于 React 19 和 Tailwind CSS 4。颜色、字体、圆角、阴影和动效由主题变量控制。Inkpaw
+        主题提供浅色与深色。
+      </p>
+
+      <section class="mt-10" aria-labelledby="components-heading">
+        <h2 id="components-heading" class="text-xl font-semibold text-ink">组件</h2>
+        <dl class="mt-3 divide-y divide-rule border-y border-rule text-sm">
+          <div class="flex gap-3 py-2.5">
+            <dt><a class="component-link" href="./preview/#button">Button</a></dt>
+            <dd>主要、次要和危险操作</dd>
+          </div>
+          <div class="flex gap-3 py-2.5">
+            <dt><a class="component-link" href="./preview/#input">Input</a></dt>
+            <dd>表单输入、文件选择与校验状态</dd>
+          </div>
+          <div class="flex gap-3 py-2.5">
+            <dt><a class="component-link" href="./preview/#select">Select</a></dt>
+            <dd>带分组的单选菜单</dd>
+          </div>
+          <div class="flex gap-3 py-2.5">
+            <dt><a class="component-link" href="./preview/#dialog">Dialog</a></dt>
+            <dd>弹窗与键盘焦点管理</dd>
+          </div>
+          <div class="flex gap-3 py-2.5">
+            <dt><a class="component-link" href="./preview/#badge">Badge</a></dt>
+            <dd>状态与分类标签</dd>
+          </div>
+          <div class="flex gap-3 py-2.5">
+            <dt><a class="component-link" href="./preview/#calendar">Calendar</a></dt>
+            <dd>选择日期或日期范围</dd>
+          </div>
+          <div class="flex gap-3 py-2.5">
+            <dt><a class="component-link" href="./preview/#skeleton">Skeleton</a></dt>
+            <dd>加载时的内容占位</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section class="mt-9" aria-labelledby="install-heading">
+        <h2 id="install-heading" class="text-xl font-semibold text-ink">接入</h2>
+        <pre
+          class="mt-3 rounded-(--radius-label) bg-surface-muted px-4 py-3 text-sm break-all whitespace-pre-wrap text-ink"
+        ><code>pnpm add '@huyanxius/ui@git+https://github.com/huyanxius/ui.git#fc144aa524a58b49e7a0b2c3e272438cb3c9db50'</code></pre>
+        <p class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+          <a
+            class="text-accent underline underline-offset-4"
+            href="https://github.com/huyanxius/ui#接入"
+            >配置 Tailwind 和主题</a
+          >
+          <a
+            class="underline decoration-rule-strong underline-offset-4 hover:text-accent"
+            href="https://github.com/huyanxius/ui/blob/main/LICENSE"
+            >Apache-2.0</a
+          >
+        </p>
+      </section>
+    </main>
   </body>
 </html>

@@ -5,6 +5,7 @@
   --ui-text-base--line-height: 1.6;
   --ui-ease-out: ease-out;
   --ui-ease-spring: ease-out;
+  --ui-shadow-control: 0 1px 0 var(--color-rule);
   --ui-shadow-card: 0 1px 0 var(--color-rule);
   --ui-shadow-cover: 0 1px 0 var(--color-rule);
   --ui-shadow-focus: 0 0 0 2px var(--color-accent-soft);
@@ -31,6 +32,7 @@
   --ui-color-danger-line: light-dark(#d79c98, #855357);
   --ui-color-notice-line: light-dark(#ab9483, #856b61);
   --ui-radius-skeleton: 0px;
+  --ui-radius-indicator: 0px;
   --ui-radius-label: 0px;
   --ui-radius-control: 0px;
   --ui-radius-card: 0px;
@@ -45,5 +47,6 @@
   --motion-dialog-offset: 0.25rem;
   --motion-surface-scale: 0.995;
   --motion-exit-ease: ease-in;
+  --motion-spin: ui-spin 0.75s linear infinite;
   --motion-skeleton: ui-pulse 1.5s linear infinite;
 }

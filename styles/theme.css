@@ -31,6 +31,7 @@
   --ease-out: var(--ui-ease-out);
   --ease-spring: var(--ui-ease-spring);
   --shadow-card: var(--ui-shadow-card);
+  --shadow-control: var(--ui-shadow-control);
   --shadow-cover: var(--ui-shadow-cover);
   --shadow-focus: var(--ui-shadow-focus);
   --color-canvas: var(--ui-color-canvas);
@@ -57,6 +58,7 @@
   --color-notice-line: var(--ui-color-notice-line);
   --radius-skeleton: var(--ui-radius-skeleton);
   --radius-label: var(--ui-radius-label);
+  --radius-indicator: var(--ui-radius-indicator);
   --radius-control: var(--ui-radius-control);
   --radius-card: var(--ui-radius-card);
   --radius-dialog: var(--ui-radius-dialog);
@@ -94,4 +96,30 @@
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
   }
+}
+
+/* These vars override Sonner's palette for both the system and explicit color schemes. */
+.ui-toaster[data-sonner-toaster][data-sonner-theme] {
+  font-family: var(--font-sans);
+  --normal-bg: var(--color-popover);
+  --normal-text: var(--color-popover-foreground);
+  --normal-border: var(--color-border);
+  --border-radius: var(--radius-control);
+  --success-bg: var(--color-accent-soft);
+  --success-text: var(--color-ink);
+  --success-border: var(--color-accent-line);
+  --info-bg: var(--color-surface);
+  --info-text: var(--color-ink);
+  --info-border: var(--color-rule);
+  --warning-bg: var(--color-surface-muted);
+  --warning-text: var(--color-ink);
+  --warning-border: var(--color-notice-line);
+  --error-bg: var(--color-danger-soft);
+  --error-text: var(--color-danger);
+  --error-border: var(--color-danger-line);
+}
+.ui-toaster [data-sonner-toast][data-styled='true'] {
+  box-shadow: var(--shadow-card);
+  transition-duration: var(--motion-surface);
+  transition-timing-function: var(--ease-out);
 }

@@ -101,3 +101,131 @@
     opacity: 0.5;
   }
 }
+
+/* Portals share the same easing and duration as the existing dialog and select. */
+:is([data-slot='alert-dialog-overlay'], [data-slot='sheet-overlay'])[data-state='open'] {
+  animation: popup-fade-in var(--motion-fast) var(--ease-out) both;
+}
+:is([data-slot='alert-dialog-overlay'], [data-slot='sheet-overlay'])[data-state='closed'] {
+  animation: popup-fade-out var(--motion-fast) var(--motion-exit-ease) both;
+}
+
+[data-slot='alert-dialog-content'][data-state='open'] {
+  animation: popup-dialog-in var(--motion-surface) var(--ease-out) both;
+}
+[data-slot='alert-dialog-content'][data-state='closed'] {
+  animation: popup-dialog-out var(--motion-fast) var(--motion-exit-ease) both;
+}
+
+:is(
+  [data-slot='popover-content'],
+  [data-slot='combobox-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='dropdown-menu-sub-content']
+)[data-state='open'],
+[data-slot='tooltip-content']:is([data-state='instant-open'], [data-state='delayed-open']) {
+  animation: popup-menu-in var(--motion-fast) var(--ease-out) both;
+}
+:is(
+  [data-slot='popover-content'],
+  [data-slot='combobox-content'],
+  [data-slot='dropdown-menu-content'],
+  [data-slot='dropdown-menu-sub-content'],
+  [data-slot='tooltip-content']
+)[data-state='closed'] {
+  animation: popup-fade-out var(--motion-fast) var(--motion-exit-ease) both;
+}
+
+[data-slot='sheet-content'][data-side='left'] {
+  --sheet-offset: translateX(-100%);
+}
+[data-slot='sheet-content'][data-side='right'] {
+  --sheet-offset: translateX(100%);
+}
+[data-slot='sheet-content'][data-side='top'] {
+  --sheet-offset: translateY(-100%);
+}
+[data-slot='sheet-content'][data-side='bottom'] {
+  --sheet-offset: translateY(100%);
+}
+[data-slot='sheet-content'][data-state='open'] {
+  animation: sheet-in var(--motion-surface) var(--ease-out) both;
+}
+[data-slot='sheet-content'][data-state='closed'] {
+  animation: sheet-out var(--motion-surface) var(--motion-exit-ease) both;
+}
+@keyframes sheet-in {
+  from {
+    transform: var(--sheet-offset);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes sheet-out {
+  from {
+    transform: none;
+  }
+  to {
+    transform: var(--sheet-offset);
+  }
+}
+
+[data-slot='accordion-content'] {
+  --disclosure-height: var(--radix-accordion-content-height);
+}
+[data-slot='collapsible-content'] {
+  --disclosure-height: var(--radix-collapsible-content-height);
+}
+:is(
+  [data-slot='accordion-content'],
+  [data-slot='collapsible-content']:not([data-keep-mounted])
+)[data-state='open'] {
+  overflow: hidden;
+  animation: disclosure-in var(--motion-surface) var(--ease-out);
+}
+:is(
+  [data-slot='accordion-content'],
+  [data-slot='collapsible-content']:not([data-keep-mounted])
+)[data-state='closed'] {
+  overflow: hidden;
+  animation: disclosure-out var(--motion-surface) var(--ease-out);
+}
+@keyframes disclosure-in {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--disclosure-height);
+  }
+}
+@keyframes disclosure-out {
+  from {
+    height: var(--disclosure-height);
+  }
+  to {
+    height: 0;
+  }
+}
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(
+    [data-slot='alert-dialog-content'],
+    [data-slot='sheet-content'],
+    [data-slot='popover-content'],
+    [data-slot='combobox-content'],
+    [data-slot='dropdown-menu-content'],
+    [data-slot='dropdown-menu-sub-content'],
+    [data-slot='tooltip-content']
+  ):is([data-state='open'], [data-state='instant-open'], [data-state='delayed-open']) {
+    animation-name: popup-fade-in;
+  }
+  :is([data-slot='alert-dialog-content'], [data-slot='sheet-content'])[data-state='closed'] {
+    animation-name: popup-fade-out;
+  }
+}

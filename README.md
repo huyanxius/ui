@@ -1,6 +1,6 @@
 # @huyanxius/ui
 
-适用于 React 19 和 Tailwind CSS 4 的通用组件。Button、Badge、Input、Select、Calendar、Dialog 和 Skeleton 共用语义令牌。Inkpaw 主题取自 [Inkpaw 前端](https://github.com/hackathon-crew/contest-detective/tree/b55e496368a2b2c2cf643a9c19b35f24af794075/frontend)。
+适用于 React 19 和 Tailwind CSS 4 的通用组件。基础控件、表单、浮层、反馈、导航和展示组件共用语义令牌。Inkpaw 主题取自 [Inkpaw 前端](https://github.com/hackathon-crew/contest-detective/tree/b55e496368a2b2c2cf643a9c19b35f24af794075/frontend)。
 
 ## 接入
 
@@ -38,6 +38,10 @@ import { Button, CenteredDialog } from '@huyanxius/ui'
 
 `CenteredDialog` 接收调用方提供的 `closeLabel`。组合底层 `Dialog` 时可以把 `closeLabel` 传给 `DialogContent` 或 `DialogFooter`，分别将关闭操作放在右上角或页脚。日历沿用 DayPicker 的 `locale`。
 
+ToggleGroup 的单选和多选分别使用 `type="single"`、`type="multiple"`。ToggleGroup、Switch 和 Textarea 接受 `unstyled`，便于已有应用沿用自己的样式。
+
+Combobox 组合 Radix Popover 和 cmdk。传入 `items`（含 `value`、`label`、可选的 `disabled`）及 `placeholder`、`searchLabel`、`emptyText`。Toast 在应用内挂载一个 `Toaster`，通过同包导出的 `toast` 发送。EmptyState 和 ErrorState 接收调用方传入的提示，ErrorState 的重试操作由 `onRetry` 和 `retryLabel` 提供。
+
 ## 主题
 
 `data-ui-theme` 选择变量表，`data-theme` 在 `light` 和 `dark` 之间切换。把两者设在 `html` 上，挂到 `body` 的菜单和弹窗会一起切换。颜色用 `light-dark()` 定义两套值，`dark:` 工具类跟随显式的 `data-theme="dark"`。
@@ -69,4 +73,4 @@ it('uses semantic tokens', () => {
 })
 ```
 
-[参与贡献](CONTRIBUTING.md) · [Apache-2.0](LICENSE)
+[参与贡献](CONTRIBUTING.md) · [Apache-2.0](LICENSE) · [shadcn/ui 许可证](THIRD_PARTY_NOTICES.md)

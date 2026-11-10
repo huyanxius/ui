@@ -40,12 +40,14 @@ function DialogContent({
   className,
   children,
   closeLabel,
+  container,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   closeLabel?: string
+  container?: React.ComponentProps<typeof DialogPrimitive.Portal>['container']
 }) {
   return (
-    <DialogPortal>
+    <DialogPortal container={container}>
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
